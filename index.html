@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Malla Curricular Medicina</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fefefe;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      color: #444;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 20px;
+    }
+    .year {
+      min-width: 250px;
+      background: #f2f2f2;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    .year h3 {
+      text-align: center;
+      color: #666;
+    }
+    .subject {
+      background-color: #cfe8fc;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+      position: relative;
+    }
+    .subject.locked {
+      background-color: #f9d5d3;
+      cursor: not-allowed;
+    }
+    .subject.completed {
+      background-color: #b6e2b6;
+      text-decoration: line-through;
+    }
+    .subject[title]:hover::after {
+      content: attr(title);
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #444;
+      color: #fff;
+      padding: 5px;
+      border-radius: 5px;
+      white-space: nowrap;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <h2>Malla Curricular - Medicina</h2>
+  <div class="grid" id="malla"></div>
+
+  <script>
+    const subjects = {
+      "PRIMER AÑO": {
+        "1er y 2do semestre": [
+          "Anatomia", "Embriologia humana", "Bioquímica y biología molecular",
+          "Biología celular e Histologia medica", "Integración básico clínica 1",
+          "Informática biomédica", "Introducción a la salud mental", "Salud publica y comunidad"
+        ]
+      },
+      "SEGUNDO AÑO": {
+        "3er y 4to semestre": [
+          "Farmacologia", "Fisiologia", "Inmunologia",
+          "Microbiologia y parasitología", "Integración básico clínico 2",
+          "Introduccion a la cirugia", "Infromatica biomédica 2",
+          "Promoción de la salud en el ciclo de vida"
+        ]
+      },
+      "TERCER AÑO": {
+        "5to semestre": [
+          "Imagenologia", "Laboratorio clínico",
+          "Propedéutica medica y fisiopatología", "Medicina psicológica y comunicación",
+          "Epidemiologia clínica y medicina basada en evidencias"
+        ],
+        "6to semestre": [
+          "Anatomía patológica 1", "Cardiología", "Neumología", "Otorrinolaringología",
+          "Urología", "Psiquiatría", "Nefrología", "Hematología",
+          "Farmacología terapéutica", "Integración clínico básica 1"
+        ]
+      },
+      "CUARTO AÑO": {
+        "7mo semestre": [
+          "Anatomía patológica 2", "Gastroenterología", "Endocrinología",
+          "Dermatología", "Neurología", "Oftalmología", "Nutrición humana",
+          "Genética", "Integración clínica básica 1", "Antropología Medica e interculturalidad 1"
+        ],
+        "8vo semestre": [
+          "Ginecología y obstetricia", "Pediatría", "Rehabilitación",
+          "Integrcion clínico básico 2", "Ambiente trabajo y salud",
+          "Bioética medica y profesionalismo", "Historia y filosofía de la medicina"
+        ]
+      },
+      "QUINTO AÑO": {
+        "9no semestre": [
+          "Cirugia y urgencias medicas", "Ortopedia y traumatología", "Infectologia",
+          "Algologia", "Reumatologia", "Medicina legal", "Geriatría",
+          "Integración Clinico básica 2"
+        ],
+        "10mo y 11vo semestre": [
+          "Ginecología y obstetricia", "Cirugía", "Medicina interna",
+          "Pediatría", "Urgencias Medico quirúrgicas", "Medicina familiar y comunitaria"
+        ],
+        "12vo y 13er semestre": [
+          "SERVICIO SOCIAL"
+        ]
+      }
+    };
+
+    // Requisitos para desbloquear
+    const prerequisites = {
+      "Integración básico clínico 2": ["Integración básico clínica 1"],
+      "Integración clínico básica 1": ["Integración básico clínico 2"],
+      "Integración clínica básica 1": ["Integración clínico básica 1"],
+      "Integrcion clínico básico 2": ["Integración clínica básica 1"],
+      "Integración Clinico básica 2": ["Integrcion clínico básico 2"]
+    };
+
+    const progreso = JSON.parse(localStorage.getItem("progresoMedicina") || "{}");
+
+    function guardarProgreso() {
+      localStorage.setItem("progresoMedicina", JSON.stringify(progreso));
+    }
+
+    function crearMalla() {
+      const container = document.getElementById("malla");
+      container.innerHTML = "";
+
+      for (const [año, ciclos] of Object.entries(subjects)) {
+        const yearDiv = document.createElement("div");
+        yearDiv.className = "year";
+        yearDiv.innerHTML = `<h3>${año}</h3>`;
+        
+        for (const [ciclo, materias] of Object.entries(ciclos)) {
+          const cicloTitle = document.createElement("h4");
+          cicloTitle.textContent = ciclo;
+          yearDiv.appendChild(cicloTitle);
+
+          materias.forEach(materia => {
+            const div = document.createElement("div");
+            div.className = "subject";
+            div.textContent = materia;
+
+            const aprobada = progreso[materia];
+            const requisitos = prerequisites[materia];
+
+            if (requisitos) {
+              const faltantes = requisitos.filter(req => !progreso[req]);
+              if (faltantes.length > 0) {
+                div.classList.add("locked");
+                div.title = "Requiere: " + faltantes.join(", ");
+              }
+            }
+
+            if (aprobada) {
+              div.classList.add("completed");
+            }
+
+            div.addEventListener("click", () => {
+              if (div.classList.contains("locked")) return;
+
+              progreso[materia] = !progreso[materia];
+              guardarProgreso();
+              crearMalla(); // Refresh
+            });
+
+            yearDiv.appendChild(div);
+          });
+        }
+
+        container.appendChild(yearDiv);
+      }
+    }
+
+    crearMalla();
+  </script>
+</body>
+</html>
