@@ -1,131 +1,154 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Malla Curricular Medicina</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #fefefe;
-      color: #333;
+      font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background-color: #fff0f5;
       margin: 0;
       padding: 20px;
+      color: #333;
     }
+
     h2 {
       text-align: center;
-      color: #444;
+      font-weight: bold;
+      color: #6a0dad;
+      margin-bottom: 30px;
     }
+
     .grid {
       display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
       gap: 20px;
+      overflow-x: auto;
+      padding-bottom: 20px;
     }
+
     .year {
-      min-width: 250px;
-      background: #f2f2f2;
+      min-width: 270px;
+      background: #fce4ec;
+      border: 2px solid #d48fb8;
       border-radius: 10px;
-      padding: 10px;
-      box-shadow: 0 0 10px #ccc;
+      padding: 15px;
+      box-shadow: 0 0 10px #eac5da;
     }
+
     .year h3 {
       text-align: center;
-      color: #666;
+      font-weight: bold;
+      color: #b03060;
+      margin-top: 0;
     }
+
+    h4 {
+      color: #a64ca6;
+      font-weight: bold;
+      border-bottom: 1px solid #d48fb8;
+      margin-bottom: 10px;
+    }
+
     .subject {
-      background-color: #cfe8fc;
-      margin: 8px 0;
-      padding: 10px;
+      background-color: #f8bbd0;
+      border: 2px solid #b03060;
       border-radius: 5px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
       cursor: pointer;
-      transition: background 0.3s;
       position: relative;
+      transition: all 0.3s ease;
     }
+
+    .subject.completed {
+      background-color: #e1bee7;
+      text-decoration: line-through;
+      color: #4a4a4a;
+    }
+
     .subject.locked {
-      background-color: #f9d5d3;
+      background-color: #f3d6e0;
+      border-color: #999;
       cursor: not-allowed;
     }
-    .subject.completed {
-      background-color: #b6e2b6;
-      text-decoration: line-through;
-    }
+
     .subject[title]:hover::after {
       content: attr(title);
       position: absolute;
       top: 100%;
       left: 0;
-      background: #444;
-      color: #fff;
-      padding: 5px;
+      background: #6a0dad;
+      color: white;
+      padding: 5px 8px;
+      font-size: 13px;
       border-radius: 5px;
       white-space: nowrap;
-      z-index: 1;
+      z-index: 10;
     }
   </style>
 </head>
 <body>
-  <h2>Malla Curricular - Medicina</h2>
+  <h2>Malla Curricular de Medicina</h2>
   <div class="grid" id="malla"></div>
 
   <script>
-    const subjects = {
+    const malla = {
       "PRIMER AÑO": {
-        "1er y 2do semestre": [
-          "Anatomia", "Embriologia humana", "Bioquímica y biología molecular",
-          "Biología celular e Histologia medica", "Integración básico clínica 1",
-          "Informática biomédica", "Introducción a la salud mental", "Salud publica y comunidad"
+        "Primer y Segundo Semestre": [
+          "Anatomía", "Embriología humana", "Bioquímica y biología molecular",
+          "Biología celular e Histología medica", "Integración básico clínica 1",
+          "Informática biomédica", "Introducción a la salud mental", "Salud pública y comunidad"
         ]
       },
       "SEGUNDO AÑO": {
-        "3er y 4to semestre": [
-          "Farmacologia", "Fisiologia", "Inmunologia",
-          "Microbiologia y parasitología", "Integración básico clínico 2",
-          "Introduccion a la cirugia", "Infromatica biomédica 2",
-          "Promoción de la salud en el ciclo de vida"
+        "Tercer y Cuarto semestre": [
+          "Farmacología", "Fisiología", "Inmunología", "Microbiología y parasitología",
+          "Integración básico clínico 2", "Introduccion a la cirugia",
+          "Infromatica biomédica 2", "Promoción de la salud en el ciclo de vida"
         ]
       },
       "TERCER AÑO": {
-        "5to semestre": [
-          "Imagenologia", "Laboratorio clínico",
-          "Propedéutica medica y fisiopatología", "Medicina psicológica y comunicación",
-          "Epidemiologia clínica y medicina basada en evidencias"
+        "Quinto semestre": [
+          "Imagenologia", "Laboratorio clínico", "Propedéutica medica y fisiopatología",
+          "Medicina psicológica y comunicación", "Epidemiologia clínica y medicina basada en evidencias"
         ],
-        "6to semestre": [
+        "Sexto semestre": [
           "Anatomía patológica 1", "Cardiología", "Neumología", "Otorrinolaringología",
           "Urología", "Psiquiatría", "Nefrología", "Hematología",
           "Farmacología terapéutica", "Integración clínico básica 1"
         ]
       },
       "CUARTO AÑO": {
-        "7mo semestre": [
-          "Anatomía patológica 2", "Gastroenterología", "Endocrinología",
-          "Dermatología", "Neurología", "Oftalmología", "Nutrición humana",
-          "Genética", "Integración clínica básica 1", "Antropología Medica e interculturalidad 1"
+        "Séptimo semestre": [
+          "Anatomía patológica 2", "Gastroenterología", "Endocrinología", "Dermatología",
+          "Neurología", "Oftalmología", "Nutrición humana", "Genética",
+          "Integración clínica básica 1", "Antropología Medica e interculturalidad 1"
         ],
-        "8vo semestre": [
-          "Ginecología y obstetricia", "Pediatría", "Rehabilitación",
-          "Integrcion clínico básico 2", "Ambiente trabajo y salud",
-          "Bioética medica y profesionalismo", "Historia y filosofía de la medicina"
+        "Octavo semestre": [
+          "Ginecología y obstetricia", "Pediatría", "Rehabilitación", "Integrcion clínico básico 2",
+          "Ambiente trabajo y salud", "Bioética medica y profesionalismo",
+          "Historia y filosofía de la medicina"
         ]
       },
       "QUINTO AÑO": {
-        "9no semestre": [
+        "Noveno semestre": [
           "Cirugia y urgencias medicas", "Ortopedia y traumatología", "Infectologia",
           "Algologia", "Reumatologia", "Medicina legal", "Geriatría",
           "Integración Clinico básica 2"
         ],
-        "10mo y 11vo semestre": [
+        "Décimo y onceavo semestre": [
           "Ginecología y obstetricia", "Cirugía", "Medicina interna",
           "Pediatría", "Urgencias Medico quirúrgicas", "Medicina familiar y comunitaria"
-        ],
-        "12vo y 13er semestre": [
+        ]
+      },
+      "SEXTO AÑO": {
+        "Doceavo y décimo tercer semestre": [
           "SERVICIO SOCIAL"
         ]
       }
     };
 
-    // Requisitos para desbloquear
-    const prerequisites = {
+    const requisitos = {
       "Integración básico clínico 2": ["Integración básico clínica 1"],
       "Integración clínico básica 1": ["Integración básico clínico 2"],
       "Integración clínica básica 1": ["Integración clínico básica 1"],
@@ -140,52 +163,46 @@
     }
 
     function crearMalla() {
-      const container = document.getElementById("malla");
-      container.innerHTML = "";
+      const contenedor = document.getElementById("malla");
+      contenedor.innerHTML = "";
 
-      for (const [año, ciclos] of Object.entries(subjects)) {
-        const yearDiv = document.createElement("div");
-        yearDiv.className = "year";
-        yearDiv.innerHTML = `<h3>${año}</h3>`;
-        
+      for (const [anio, ciclos] of Object.entries(malla)) {
+        const col = document.createElement("div");
+        col.className = "year";
+        col.innerHTML = `<h3>${anio}</h3>`;
+
         for (const [ciclo, materias] of Object.entries(ciclos)) {
-          const cicloTitle = document.createElement("h4");
-          cicloTitle.textContent = ciclo;
-          yearDiv.appendChild(cicloTitle);
+          const titulo = document.createElement("h4");
+          titulo.textContent = ciclo;
+          col.appendChild(titulo);
 
-          materias.forEach(materia => {
+          for (const materia of materias) {
             const div = document.createElement("div");
             div.className = "subject";
             div.textContent = materia;
 
-            const aprobada = progreso[materia];
-            const requisitos = prerequisites[materia];
+            const completada = progreso[materia];
+            const prereq = requisitos[materia];
+            const faltan = prereq ? prereq.filter(r => !progreso[r]) : [];
 
-            if (requisitos) {
-              const faltantes = requisitos.filter(req => !progreso[req]);
-              if (faltantes.length > 0) {
-                div.classList.add("locked");
-                div.title = "Requiere: " + faltantes.join(", ");
-              }
-            }
-
-            if (aprobada) {
-              div.classList.add("completed");
+            if (completada) div.classList.add("completed");
+            if (faltan.length > 0) {
+              div.classList.add("locked");
+              div.title = "Requiere: " + faltan.join(", ");
             }
 
             div.addEventListener("click", () => {
               if (div.classList.contains("locked")) return;
-
               progreso[materia] = !progreso[materia];
               guardarProgreso();
-              crearMalla(); // Refresh
+              crearMalla();
             });
 
-            yearDiv.appendChild(div);
-          });
+            col.appendChild(div);
+          }
         }
 
-        container.appendChild(yearDiv);
+        contenedor.appendChild(col);
       }
     }
 
@@ -193,3 +210,4 @@
   </script>
 </body>
 </html>
+
